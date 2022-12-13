@@ -41,7 +41,8 @@ public class AccountEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable=false)
-    private Role role;
+    @Builder.Default
+    private Role role = Role.USER;
 
     @Builder.Default
     private Boolean enabled = false;
