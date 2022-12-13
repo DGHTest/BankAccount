@@ -11,9 +11,9 @@ public interface TransactionRepository {
 
     Optional<TransactionDomain> getTransactionById(long id);
 
-    Optional<List<TransactionDomain>> getByIdAccount(long idAccount);
+    List<TransactionDomain> getByIdAccount(long idAccount);
 
-    Optional<List<TransactionDomain>> getByAfterTransactionTimeAndIdAccount(Timestamp timestamp, long idAccount);
+    List<TransactionDomain> getByAfterTransactionTimeAndIdAccount(Timestamp timestamp, long idAccount);
 
     TransactionDomain saveTransaction(TransactionDomain transactionDomain);
 }
