@@ -35,14 +35,13 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     }
 
     @Override
-    public List<TransactionDomain> getByAfterTransactionTimeAndIdAccount(Timestamp timestamp, long idAccount) {
+    public List<TransactionDomain> getByTimeAndIdAccount(Timestamp timestamp, long idAccount) {
         List<TransactionEntity> transactionEntities = transactionCrudRepository.findByTransactionTimestampAfterAndIdAccount(timestamp, idAccount);
         return transactionMapper.toTransactionDomains(transactionEntities);
     }
 
     @Override
-    public TransactionDomain saveTransaction(TransactionDomain transactionDomain) {
-        TransactionEntity transactionEntity = transactionMapper.toTransactionEntity(transactionDomain);
+    public TransactionDomain saveTransaction(TransactionEntity transactionEntity) {
         return transactionMapper.toTransactionDomain(transactionCrudRepository.save(transactionEntity));
     }
 }

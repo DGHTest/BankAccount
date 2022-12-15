@@ -1,7 +1,5 @@
 package com.banktest.account.repository;
 
-import com.banktest.account.constants.TransactionType;
-import com.banktest.account.domain.AccountDomain;
 import com.banktest.account.domain.TransactionDomain;
 import com.banktest.account.domain.repository.TransactionRepository;
 import com.banktest.account.persistence.crud.TransactionCrudRepository;
@@ -100,7 +98,7 @@ class TransactionRepositoryImplTest {
         Mockito.when(transactionCrudRepository.findByTransactionTimestampAfterAndIdAccount(Timestamp.valueOf("2021-10-09 20:10:00"), 84l))
                 .thenReturn(Arrays.asList(transactionEntityList.get(2)));
 
-        List<TransactionDomain> transactionDomainList = transactionRepository.getByAfterTransactionTimeAndIdAccount(Timestamp.valueOf("2021-10-09 20:10:00"), 84l);
+        List<TransactionDomain> transactionDomainList = transactionRepository.getByTimeAndIdAccount(Timestamp.valueOf("2021-10-09 20:10:00"), 84l);
 
         assertAll(
                 () -> assertEquals(Arrays.asList(6546l), transactionDomainList.stream().map(TransactionDomain::getIdTransaction).collect(Collectors.toList())),
@@ -122,7 +120,7 @@ class TransactionRepositoryImplTest {
 
         Mockito.when(transactionCrudRepository.save(ArgumentMatchers.any())).thenReturn(transactionEntity);
 
-        TransactionDomain transactionSave = transactionRepository.saveTransaction(transactionMapper.toTransactionDomain(transactionEntity));
+        TransactionDomain transactionSave = transactionRepository.saveTransaction(transactionEntity);
 
         assertAll(
                 () -> assertEquals(transactionEntity.getIdTransaction(), transactionSave.getIdTransaction()),

@@ -92,13 +92,16 @@ class AccountCrudRepositoryTest {
     @Test
     @DisplayName("Should update the balance of a specific account with his id in the database")
     public void updateBalance() {
-        accountCrudRepository.updateBalance(new BigDecimal("6000.00"), 3);
+        BigDecimal currentBalance = new BigDecimal("4000.00");
+        currentBalance = currentBalance.subtract(new BigDecimal("1000.00"));
+
+        accountCrudRepository.updateBalance(currentBalance, 3);
 
         AccountEntity accountEntity = accountCrudRepository.findById(3L).get();
 
         assertAll(
                 () -> assertThat(accountEntity.getIdAccount()).isEqualTo(3),
-                () -> assertThat(accountEntity.getCurrentBalance().toString()).isEqualTo("6000.00")
+                () -> assertThat(accountEntity.getCurrentBalance().toString()).isEqualTo("3000.00")
         );
     }
 }

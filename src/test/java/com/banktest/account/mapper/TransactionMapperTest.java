@@ -32,7 +32,7 @@ public class TransactionMapperTest {
                 .idTransaction(432l)
                 .idAccount(5l)
                 .transactionAmount(new BigDecimal(333))
-                .transactionType(TransactionType.DEPOSITS)
+                .transactionType(TransactionType.DEPOSIT)
                 .transactionTimestamp(Timestamp.valueOf(LocalDateTime.of(2022, Month.DECEMBER, 1, 13, 12, 00)))
                 .accountEntity(null)
                 .build();

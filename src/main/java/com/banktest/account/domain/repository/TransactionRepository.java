@@ -1,7 +1,7 @@
 package com.banktest.account.domain.repository;
 
-import com.banktest.account.domain.AccountDomain;
 import com.banktest.account.domain.TransactionDomain;
+import com.banktest.account.persistence.entity.TransactionEntity;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -13,7 +13,7 @@ public interface TransactionRepository {
 
     List<TransactionDomain> getByIdAccount(long idAccount);
 
-    List<TransactionDomain> getByAfterTransactionTimeAndIdAccount(Timestamp timestamp, long idAccount);
+    List<TransactionDomain> getByTimeAndIdAccount(Timestamp timestamp, long idAccount);
 
-    TransactionDomain saveTransaction(TransactionDomain transactionDomain);
+    TransactionDomain saveTransaction(TransactionEntity transactionEntity);
 }
