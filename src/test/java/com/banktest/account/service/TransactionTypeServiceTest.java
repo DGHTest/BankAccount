@@ -9,6 +9,7 @@ import com.banktest.account.domain.service.TransactionService;
 import com.banktest.account.domain.service.TransactionTypeService;
 import com.banktest.account.persistence.entity.TransactionEntity;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
@@ -21,6 +22,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.ZoneId;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -58,13 +60,15 @@ class TransactionTypeServiceTest {
                 .idTransaction(87658l)
                 .idAccount(34654363l)
                 .transactionAmount(new BigDecimal("10000.45"))
-                .transactionTimestamp(Timestamp.valueOf(LocalDateTime.of(2065, Month.OCTOBER, 12, 13, 12, 00)))
+                .transactionTimestamp(LocalDateTime.of(2065, Month.OCTOBER, 12, 13, 12, 00)
+                        .atZone(ZoneId.of("America/Mexico_City")).toInstant())
                 .build();
 
         Mockito.when(transactionRepository.saveTransaction(ArgumentMatchers.any())).thenReturn(transactionDomain);
     }
 
     @Test
+    @DisplayName("Should convert one transactionDomain to transactionEntity with DEPOSIT type to repository and return one transactionDomain and add to account's current balance")
     void saveDepositTransaction() {
         Mockito.doNothing().when(accountRepository).updateBalance(new BigDecimal("30000.45"), 87658l);
 
@@ -82,6 +86,7 @@ class TransactionTypeServiceTest {
     }
 
     @Test
+    @DisplayName("Should convert one transactionDomain to transactionEntity with CHECK type to repository and return one transactionDomain")
     void saveCheckTransaction() {
         TransactionDomain transactionSave = transactionTypeService.saveCheckTransaction(transactionDomain);
 
@@ -94,6 +99,7 @@ class TransactionTypeServiceTest {
     }
 
     @Test
+    @DisplayName("Should convert one transactionDomain to transactionEntity with ONLINE_PAYMENT type to repository and return one transactionDomain and subtract to account's current balance")
     void saveOnlinePaymentTransaction() {
         Mockito.doNothing().when(accountRepository).updateBalance(new BigDecimal("9999.55"), 87658l);
 
@@ -111,6 +117,7 @@ class TransactionTypeServiceTest {
     }
 
     @Test
+    @DisplayName("Should convert one transactionDomain to transactionEntity with WIRE_TRANSFER type to repository and return one transactionDomain and subtract to account's current balance")
     void saveWireTransferTransaction() {
         Mockito.doNothing().when(accountRepository).updateBalance(new BigDecimal("9999.55"), 87658l);
 

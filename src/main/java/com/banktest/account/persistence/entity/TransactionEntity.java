@@ -1,6 +1,7 @@
 package com.banktest.account.persistence.entity;
 
 import com.banktest.account.constants.TransactionType;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,6 +12,7 @@ import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Digits;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.Instant;
 
 @Entity
 @Getter
@@ -38,7 +40,7 @@ public class TransactionEntity {
     private TransactionType transactionType;
 
     @Column(name = "transaction_timestamp", nullable = false)
-    private Timestamp transactionTimestamp;
+    private Instant transactionTimestamp;
 
     @ManyToOne
     @JoinColumn(name = "id_account", insertable = false, updatable = false)

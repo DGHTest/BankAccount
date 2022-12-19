@@ -17,8 +17,10 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -47,21 +49,24 @@ class TransactionRepositoryImplTest {
                 .idTransaction(432l)
                 .idAccount(343l)
                 .transactionAmount(new BigDecimal("87523.45"))
-                .transactionTimestamp(Timestamp.valueOf(LocalDateTime.of(2022, Month.OCTOBER, 12, 13, 12, 00)))
+                .transactionTimestamp(LocalDateTime.of(2022, Month.OCTOBER, 12, 13, 12, 00)
+                        .atZone(ZoneId.of("America/Mexico_City")).toInstant())
                 .build();
 
         TransactionEntity transactionEntity2 = TransactionEntity.builder()
                 .idTransaction(342l)
                 .idAccount(343l)
                 .transactionAmount(new BigDecimal("7657.75"))
-                .transactionTimestamp(Timestamp.valueOf(LocalDateTime.of(2022, Month.JANUARY, 20, 20, 12, 00)))
+                .transactionTimestamp(LocalDateTime.of(2022, Month.JANUARY, 20, 20, 12, 00)
+                        .atZone(ZoneId.of("America/Mexico_City")).toInstant())
                 .build();
 
         TransactionEntity transactionEntity3 = TransactionEntity.builder()
                 .idTransaction(6546l)
                 .idAccount(84l)
                 .transactionAmount(new BigDecimal("6546734.76"))
-                .transactionTimestamp(Timestamp.valueOf(LocalDateTime.of(2022, Month.DECEMBER, 11, 13, 12, 00)))
+                .transactionTimestamp(LocalDateTime.of(2022, Month.DECEMBER, 11, 13, 12, 00)
+                        .atZone(ZoneId.of("America/Mexico_City")).toInstant())
                 .build();
 
         transactionEntityList = Arrays.asList(transactionEntity1, transactionEntity2, transactionEntity3);
@@ -95,16 +100,16 @@ class TransactionRepositoryImplTest {
     @Test
     @DisplayName("Should return all transactionEntities of the database with the specific idAccount and with the timestamp condition and the mapper should transform to transactionDomain")
     void getByAfterTransactionTimeAndIdAccount() {
-        Mockito.when(transactionCrudRepository.findByTransactionTimestampAfterAndIdAccount(Timestamp.valueOf("2021-10-09 20:10:00"), 84l))
+        Mockito.when(transactionCrudRepository.findByTransactionTimestampAfterAndIdAccount(Instant.parse("2021-10-09T20:10:00Z"), 84l))
                 .thenReturn(Arrays.asList(transactionEntityList.get(2)));
 
-        List<TransactionDomain> transactionDomainList = transactionRepository.getByTimeAndIdAccount(Timestamp.valueOf("2021-10-09 20:10:00"), 84l);
+        List<TransactionDomain> transactionDomainList = transactionRepository.getByTimeAndIdAccount(Instant.parse("2021-10-09T20:10:00Z"), 84l);
 
         assertAll(
                 () -> assertEquals(Arrays.asList(6546l), transactionDomainList.stream().map(TransactionDomain::getIdTransaction).collect(Collectors.toList())),
                 () -> assertEquals(Arrays.asList(84l), transactionDomainList.stream().map(TransactionDomain::getIdAccount).collect(Collectors.toList())),
                 () -> assertEquals(Arrays.asList("6546734.76"), transactionDomainList.stream().map(transaction -> transaction.getTransactionAmount().toString()).collect(Collectors.toList())),
-                () -> assertEquals(Arrays.asList(Timestamp.valueOf("2022-12-11 13:12:00")), transactionDomainList.stream().map(TransactionDomain::getTransactionTimestamp).collect(Collectors.toList()))
+                () -> assertEquals(Arrays.asList(transactionEntityList.get(2).getTransactionTimestamp()), transactionDomainList.stream().map(TransactionDomain::getTransactionTimestamp).collect(Collectors.toList()))
         );
     }
 
@@ -115,7 +120,8 @@ class TransactionRepositoryImplTest {
                 .idTransaction(87658l)
                 .idAccount(34654363l)
                 .transactionAmount(new BigDecimal("6545643.45"))
-                .transactionTimestamp(Timestamp.valueOf(LocalDateTime.of(2065, Month.OCTOBER, 12, 13, 12, 00)))
+                .transactionTimestamp(LocalDateTime.of(2065, Month.OCTOBER, 12, 13, 12, 00)
+                        .atZone(ZoneId.of("America/Mexico_City")).toInstant())
                 .build();
 
         Mockito.when(transactionCrudRepository.save(ArgumentMatchers.any())).thenReturn(transactionEntity);

@@ -12,8 +12,10 @@ import org.springframework.test.context.jdbc.Sql;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -43,7 +45,8 @@ class TransactionCrudRepositoryTest {
                 () -> assertThat(transactionEntity.getIdAccount()).isEqualTo(1),
                 () -> assertThat(transactionEntity.getTransactionAmount().toString()).isEqualTo("400.00"),
                 () -> assertThat(transactionEntity.getTransactionType()).isEqualTo(TransactionType.ONLINE_PAYMENT),
-                () -> assertThat(transactionEntity.getTransactionTimestamp()).isEqualTo(Timestamp.valueOf(LocalDateTime.of(2022, 10, 9, 20, 10, 00)))
+                () -> assertThat(transactionEntity.getTransactionTimestamp()).isEqualTo(LocalDateTime.of(2022, 10, 9, 20, 10, 00)
+                        .atZone(ZoneId.of("America/Mexico_City")).toInstant())
         );
     }
 
@@ -63,8 +66,10 @@ class TransactionCrudRepositoryTest {
                 () -> assertEquals(Arrays.asList(TransactionType.WIRE_TRANSFER, TransactionType.CHECK),
                         transactionEntityList.stream().map(TransactionEntity::getTransactionType).collect(Collectors.toList())),
 
-                () -> assertEquals(Arrays.asList(Timestamp.valueOf(LocalDateTime.of(2022, Month.OCTOBER, 9, 20, 10, 00)),
-                        Timestamp.valueOf(LocalDateTime.of(2022, Month.OCTOBER, 9, 20, 10, 00))),
+                () -> assertEquals(Arrays.asList(LocalDateTime.of(2022, Month.OCTOBER, 9, 20, 10, 00)
+                                        .atZone(ZoneId.of("America/Mexico_City")).toInstant(),
+                        LocalDateTime.of(2022, Month.OCTOBER, 9, 20, 10, 00)
+                                .atZone(ZoneId.of("America/Mexico_City")).toInstant()),
                         transactionEntityList.stream().map(TransactionEntity::getTransactionTimestamp).collect(Collectors.toList()))
         );
     }
@@ -72,11 +77,15 @@ class TransactionCrudRepositoryTest {
     @Test
     @DisplayName("Should return all transactionEntities with one timestamp after the specified of the data.sql")
     void findByTransactionTimestampAfterAndIdAccount() {
+        Instant instant = LocalDateTime.of(2021, Month.OCTOBER, 9, 20, 10, 00)
+                    .atZone(ZoneId.of("America/Mexico_City")).toInstant();
+
         List<TransactionEntity> transactionEntityList = transactionCrudRepository.findByTransactionTimestampAfterAndIdAccount(
-                Timestamp.valueOf(LocalDateTime.of(2021, Month.OCTOBER, 9, 20, 10, 00)), 1);
+                instant, 1);
 
         List<TransactionEntity> errorTransactionEntity = transactionCrudRepository.findByTransactionTimestampAfterAndIdAccount(
-                Timestamp.valueOf(LocalDateTime.of(2023, Month.OCTOBER, 9, 20, 10, 00)), 1);
+                LocalDateTime.of(2022, Month.OCTOBER, 9, 20, 10, 00)
+                        .atZone(ZoneId.of("America/Mexico_City")).toInstant(), 1);
 
         assertAll(
                 () -> assertTrue(errorTransactionEntity.isEmpty()),
@@ -86,7 +95,8 @@ class TransactionCrudRepositoryTest {
                 () -> assertEquals(Arrays.asList("400.00"), transactionEntityList.stream().map(transaction -> transaction.getTransactionAmount().toString()).collect(Collectors.toList())),
                 () -> assertEquals(Arrays.asList(TransactionType.ONLINE_PAYMENT),
                         transactionEntityList.stream().map(TransactionEntity::getTransactionType).collect(Collectors.toList())),
-                () -> assertEquals(Arrays.asList(Timestamp.valueOf(LocalDateTime.of(2022, Month.OCTOBER, 9, 20, 10, 00))),
+                () -> assertEquals(Arrays.asList(LocalDateTime.of(2022, Month.OCTOBER, 9, 20, 10, 00)
+                                .atZone(ZoneId.of("America/Mexico_City")).toInstant()),
                         transactionEntityList.stream().map(TransactionEntity::getTransactionTimestamp).collect(Collectors.toList()))
         );
     }
@@ -98,7 +108,8 @@ class TransactionCrudRepositoryTest {
                 .idAccount(5l)
                 .transactionAmount(new BigDecimal(333))
                 .transactionType(TransactionType.DEPOSIT)
-                .transactionTimestamp(Timestamp.valueOf(LocalDateTime.of(2022, Month.DECEMBER, 1, 13, 12, 00)))
+                .transactionTimestamp(LocalDateTime.of(2022, Month.DECEMBER, 1, 13, 12, 00)
+                        .atZone(ZoneId.of("America/Mexico_City")).toInstant())
                 .build();
 
         TransactionEntity transactionSave = transactionCrudRepository.save(transactionEntity);

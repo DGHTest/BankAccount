@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -35,7 +36,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     }
 
     @Override
-    public List<TransactionDomain> getByTimeAndIdAccount(Timestamp timestamp, long idAccount) {
+    public List<TransactionDomain> getByTimeAndIdAccount(Instant timestamp, long idAccount) {
         List<TransactionEntity> transactionEntities = transactionCrudRepository.findByTransactionTimestampAfterAndIdAccount(timestamp, idAccount);
         return transactionMapper.toTransactionDomains(transactionEntities);
     }

@@ -12,8 +12,10 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.ZoneId;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,7 +35,8 @@ public class TransactionMapperTest {
                 .idAccount(5l)
                 .transactionAmount(new BigDecimal(333))
                 .transactionType(TransactionType.DEPOSIT)
-                .transactionTimestamp(Timestamp.valueOf(LocalDateTime.of(2022, Month.DECEMBER, 1, 13, 12, 00)))
+                .transactionTimestamp(LocalDateTime.of(2022, Month.DECEMBER, 1, 13, 12, 00)
+                        .atZone(ZoneId.of("America/Mexico_City")).toInstant())
                 .accountEntity(null)
                 .build();
 
@@ -54,7 +57,7 @@ public class TransactionMapperTest {
                 .idTransaction(4324l)
                 .idAccount(986l)
                 .transactionAmount(new BigDecimal(5646.99))
-                .transactionTimestamp(Timestamp.valueOf(LocalDateTime.now()))
+                .transactionTimestamp(Instant.now())
                 .build();
 
         TransactionEntity transactionEntity = transactionMapper.toTransactionEntity(transactionDomain);

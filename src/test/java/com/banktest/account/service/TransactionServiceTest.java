@@ -15,8 +15,10 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -43,28 +45,32 @@ class TransactionServiceTest {
                 .idTransaction(564326l)
                 .idAccount(885748l)
                 .transactionAmount(new BigDecimal("87523.45"))
-                .transactionTimestamp(Timestamp.valueOf(LocalDateTime.of(2022, Month.OCTOBER, 12, 13, 12, 00)))
+                .transactionTimestamp(LocalDateTime.of(2022, Month.OCTOBER, 12, 13, 12, 00)
+                        .atZone(ZoneId.of("America/Mexico_City")).toInstant())
                 .build();
 
         TransactionDomain transactionDomain2 = TransactionDomain.builder()
                 .idTransaction(87686l)
                 .idAccount(54365l)
                 .transactionAmount(new BigDecimal("7657.75"))
-                .transactionTimestamp(Timestamp.valueOf(LocalDateTime.of(2022, Month.JANUARY, 20, 20, 12, 00)))
+                .transactionTimestamp(LocalDateTime.of(2022, Month.JANUARY, 20, 20, 12, 00)
+                        .atZone(ZoneId.of("America/Mexico_City")).toInstant())
                 .build();
 
         TransactionDomain transactionDomain3 = TransactionDomain.builder()
                 .idTransaction(6546l)
                 .idAccount(885748l)
                 .transactionAmount(new BigDecimal("6546734.76"))
-                .transactionTimestamp(Timestamp.valueOf(LocalDateTime.of(2022, Month.DECEMBER, 11, 13, 12, 00)))
+                .transactionTimestamp(LocalDateTime.of(2022, Month.DECEMBER, 11, 13, 12, 00)
+                        .atZone(ZoneId.of("America/Mexico_City")).toInstant())
                 .build();
 
         TransactionDomain transactionDomain4 = TransactionDomain.builder()
                 .idTransaction(67582l)
                 .idAccount(885748l)
                 .transactionAmount(new BigDecimal("5464.76"))
-                .transactionTimestamp(Timestamp.valueOf(LocalDateTime.of(2022, Month.FEBRUARY, 11, 13, 12, 00)))
+                .transactionTimestamp(LocalDateTime.of(2022, Month.FEBRUARY, 11, 13, 12, 00)
+                        .atZone(ZoneId.of("America/Mexico_City")).toInstant())
                 .build();
 
         transactionDomainList = Arrays.asList(transactionDomain1, transactionDomain2, transactionDomain3, transactionDomain4);
@@ -99,17 +105,17 @@ class TransactionServiceTest {
     @Test
     @DisplayName("Should return all transactionDomain with the specific idAccount and with the timestamp condition using the repository")
     void getByTimeAndIdAccount() {
-        Mockito.when(transactionRepository.getByTimeAndIdAccount(Timestamp.valueOf("2021-10-09 20:10:00"), 54365l))
+        Mockito.when(transactionRepository.getByTimeAndIdAccount(Instant.parse("2021-10-09T20:10:00Z"), 54365l))
                 .thenReturn(Arrays.asList(transactionDomainList.get(1)));
 
-        List<TransactionDomain> transactionList = transactionService.getByTimeAndIdAccount(Timestamp.valueOf("2021-10-09 20:10:00"), 54365l);
+        List<TransactionDomain> transactionList = transactionService.getByTimeAndIdAccount(Instant.parse("2021-10-09T20:10:00Z"), 54365l);
 
         assertAll(
                 () -> assertThat(transactionList.size()).isEqualTo(1),
                 () -> assertEquals(Arrays.asList(87686l), transactionList.stream().map(TransactionDomain::getIdTransaction).collect(Collectors.toList())),
                 () -> assertEquals(Arrays.asList(54365l), transactionList.stream().map(TransactionDomain::getIdAccount).collect(Collectors.toList())),
                 () -> assertEquals(Arrays.asList("7657.75"), transactionList.stream().map(transaction -> transaction.getTransactionAmount().toString()).collect(Collectors.toList())),
-                () -> assertEquals(Arrays.asList(Timestamp.valueOf("2022-01-20 20:12:00")), transactionList.stream().map(TransactionDomain::getTransactionTimestamp).collect(Collectors.toList()))
+                () -> assertEquals(Arrays.asList(transactionDomainList.get(1).getTransactionTimestamp()), transactionList.stream().map(TransactionDomain::getTransactionTimestamp).collect(Collectors.toList()))
         );
     }
 }

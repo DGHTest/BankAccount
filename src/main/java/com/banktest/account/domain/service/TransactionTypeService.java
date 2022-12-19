@@ -27,7 +27,7 @@ public class TransactionTypeService {
                 .idAccount(transactionDomain.getIdAccount())
                 .transactionAmount(transactionDomain.getTransactionAmount())
                 .transactionType(TransactionType.DEPOSIT)
-                .transactionTimestamp(Timestamp.from(Instant.now()))
+                .transactionTimestamp(Instant.now())
                 .build();
 
         BigDecimal currentBalance = accountRepository.getAccountById(transactionDomain.getIdTransaction()).get().getCurrentBalance();
@@ -44,7 +44,7 @@ public class TransactionTypeService {
                 .idAccount(transactionDomain.getIdAccount())
                 .transactionAmount(new BigDecimal("0.00"))
                 .transactionType(TransactionType.CHECK)
-                .transactionTimestamp(Timestamp.from(Instant.now()))
+                .transactionTimestamp(Instant.now())
                 .build();
 
         return transactionRepository.saveTransaction(transactionEntity);
@@ -56,7 +56,7 @@ public class TransactionTypeService {
                 .idAccount(transactionDomain.getIdAccount())
                 .transactionAmount(transactionDomain.getTransactionAmount())
                 .transactionType(TransactionType.ONLINE_PAYMENT)
-                .transactionTimestamp(Timestamp.from(Instant.now()))
+                .transactionTimestamp(Instant.now())
                 .build();
 
         BigDecimal currentBalance = accountRepository.getAccountById(transactionDomain.getIdTransaction()).get().getCurrentBalance();
@@ -73,7 +73,7 @@ public class TransactionTypeService {
                 .idAccount(transactionDomain.getIdAccount())
                 .transactionAmount(transactionDomain.getTransactionAmount())
                 .transactionType(TransactionType.WIRE_TRANSFER)
-                .transactionTimestamp(Timestamp.from(Instant.now()))
+                .transactionTimestamp(Instant.now())
                 .build();
 
         BigDecimal currentBalance = accountRepository.getAccountById(transactionDomain.getIdTransaction()).get().getCurrentBalance();

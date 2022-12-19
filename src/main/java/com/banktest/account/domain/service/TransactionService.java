@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,7 +24,7 @@ public class TransactionService {
         return transactionRepository.getByIdAccount(idAccount);
     }
 
-    public List<TransactionDomain> getByTimeAndIdAccount(Timestamp timestamp, long idAccount) {
+    public List<TransactionDomain> getByTimeAndIdAccount(Instant timestamp, long idAccount) {
         return transactionRepository.getByTimeAndIdAccount(timestamp, idAccount);
     }
 }

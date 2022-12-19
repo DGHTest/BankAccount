@@ -6,7 +6,7 @@ INSERT INTO `account` (account_name, email, password, current_balance, role, ena
 ('Random5', 'random5@names.com', '123456', 8677.00, 'USER', 1);
 
 INSERT INTO `transaction` (id_account, transaction_amount, transaction_type, transaction_timestamp) VALUES
-(2, 6000.00, 'WIRE_TRANSFERS', {ts '2022-10-09 20:10:00'}),
-(3, 2000.00, 'DEPOSITS', {ts '2022-10-09 20:10:00'}),
-(1, 400.00, 'ONLINE_PAYMENTS', {ts '2022-10-09 20:10:00'}),
-(2, 0, 'CHECKS', {ts '2022-10-09 20:10:00'});
+(2, 6000.00, 'WIRE_TRANSFER', {ts '2022-10-09 20:10:00'}),
+(3, 2000.00, 'DEPOSIT', {ts '2022-10-09 20:10:00'}),
+(1, 400.00, 'ONLINE_PAYMENT', {ts '2022-10-09 20:10:00'}),
+(2, 0, 'CHECK', {ts '2022-10-09 20:10:00'});
