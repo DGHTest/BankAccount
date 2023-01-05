@@ -1,6 +1,5 @@
 package com.banktest.account.persistence.entity;
 
-import com.banktest.account.constants.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,6 +9,7 @@ import javax.persistence.*;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Digits;
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -37,12 +37,10 @@ public class AccountEntity {
     @DecimalMin(value = "0.00", inclusive = false)
     @Digits(integer = 8, fraction = 2)
     @Column(name = "current_balance", nullable = false)
-    private BigDecimal currentBalance;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable=false)
     @Builder.Default
-    private Role role = Role.USER;
+    private BigDecimal currentBalance = new BigDecimal("1.00");
+
+    private String role;
 
     @Builder.Default
     private Boolean enabled = false;

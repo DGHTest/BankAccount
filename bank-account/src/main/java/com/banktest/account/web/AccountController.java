@@ -28,8 +28,4 @@ public class AccountController {
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PostMapping(value = "/save", consumes = {"application/json"})
-    public ResponseEntity<AccountDomain> saveAccount(@RequestBody AccountDomain accountDomain) {
-        return new ResponseEntity<>(accountService.saveAccount(accountDomain), HttpStatus.CREATED);
-    }
 }

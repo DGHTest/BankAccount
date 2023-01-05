@@ -10,11 +10,12 @@ import org.mapstruct.Mappings;
 @Mapper(componentModel = "spring")
 public interface AccountMapper {
 
+    @Mapping(target = "matchPassword", ignore = true)
     AccountDomain toAccountDomain(AccountEntity accountEntity);
 
     @InheritInverseConfiguration
     @Mappings({
-            @Mapping(target = "role", ignore = true),
+            @Mapping(target = "roles", ignore = true),
             @Mapping(target = "enabled", ignore = true),
             @Mapping(target = "transactionEntities", ignore = true)
     })

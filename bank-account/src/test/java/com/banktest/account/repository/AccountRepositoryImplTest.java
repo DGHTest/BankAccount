@@ -93,7 +93,7 @@ class AccountRepositoryImplTest {
 
         Mockito.when(accountCrudRepository.save(ArgumentMatchers.any())).thenReturn(accountEntity);
 
-        AccountDomain accountSave = accountRepository.saveAccount(accountMapper.toAccountDomain(accountEntity));
+        AccountDomain accountSave = accountRepository.saveAccount(accountEntity);
 
         assertAll(
                 () -> assertEquals(accountEntity.getIdAccount(), accountSave.getIdAccount()),
@@ -107,11 +107,10 @@ class AccountRepositoryImplTest {
     @Test
     @DisplayName("Should update the balance of a accountEntity in the database with the specific id")
     void updateBalance() {
-        AccountRepository accountRepositoryMock = Mockito.mock(AccountRepository.class);
-        Mockito.doNothing().when(accountRepositoryMock).updateBalance(Mockito.isA(BigDecimal.class), Mockito.isA(Long.class));
+        Mockito.doNothing().when(accountCrudRepository).updateBalanceById(Mockito.isA(BigDecimal.class), Mockito.isA(Long.class));
 
-        accountRepositoryMock.updateBalance(new BigDecimal(535435), 1l);
+        accountRepository.updateBalance(new BigDecimal(535435), 1l);
 
-        Mockito.verify(accountRepositoryMock, Mockito.times(1)).updateBalance(new BigDecimal(535435), 1l);
+        Mockito.verify(accountCrudRepository, Mockito.times(1)).updateBalanceById(new BigDecimal(535435), 1l);
     }
 }

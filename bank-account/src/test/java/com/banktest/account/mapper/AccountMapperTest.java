@@ -1,6 +1,5 @@
 package com.banktest.account.mapper;
 
-import com.banktest.account.constants.Role;
 import com.banktest.account.domain.AccountDomain;
 import com.banktest.account.persistence.entity.AccountEntity;
 import com.banktest.account.persistence.mapper.AccountMapper;
@@ -51,6 +50,7 @@ public class AccountMapperTest {
                 .accountName("Random6")
                 .email("random6@names.com")
                 .password("1234567")
+                .matchPassword("1234567")
                 .currentBalance(new BigDecimal(1.00))
                 .build();
 
@@ -62,7 +62,6 @@ public class AccountMapperTest {
                 () -> assertEquals(accountDomain.getEmail(), accountEntity.getEmail()),
                 () -> assertEquals(accountDomain.getPassword(), accountEntity.getPassword()),
                 () -> assertEquals(accountDomain.getCurrentBalance(), accountEntity.getCurrentBalance()),
-                () -> assertEquals(Role.USER, accountEntity.getRole()),
                 () -> assertEquals(false, accountEntity.getEnabled())
         );
     }

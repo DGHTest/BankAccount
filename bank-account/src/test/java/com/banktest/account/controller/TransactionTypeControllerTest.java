@@ -24,8 +24,12 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.ZoneId;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+//TODO: Post methodos no trabajan sin csrf, necesito revisar por que ocurre
 @ActiveProfiles("dev")
 @WebMvcTest(TransactionTypeController.class)
 class TransactionTypeControllerTest {
@@ -50,7 +54,7 @@ class TransactionTypeControllerTest {
     }
 
     @Test
-    @DisplayName("Should save one transactionDomain in json format using the service or return a bad request")
+    @DisplayName("Should save one transactionDomain in json format using the service or return a bad request if is authorized")
     void saveDepositTransaction() throws Exception {
         Mockito.when(transactionTypeService.saveDepositTransaction(ArgumentMatchers.any()))
                 .thenReturn(transactionDomain);
@@ -59,14 +63,24 @@ class TransactionTypeControllerTest {
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/transactions-type/save-deposit")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(transactionDomain)))
-                .andExpect(status().isCreated());
+        assertAll(
+                () -> mockMvc.perform(MockMvcRequestBuilders.post("/transactions-type/save-deposit")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(transactionDomain))
+                                .with(csrf())
+                                .with(user("user").roles(BankRole.USER.toString())))
+                        .andExpect(status().isCreated()),
+
+                () -> mockMvc.perform(MockMvcRequestBuilders.post("/transactions-type/save-deposit")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(transactionDomain))
+                                .with(csrf()))
+                        .andExpect(status().isUnauthorized())
+        );
     }
 
     @Test
-    @DisplayName("Should save one transactionDomain in json format using the service or return a bad request")
+    @DisplayName("Should save one transactionDomain in json format using the service or return a bad request if is authorized")
     void saveCheckTransaction() throws Exception {
         Mockito.when(transactionTypeService.saveCheckTransaction(ArgumentMatchers.any()))
                 .thenReturn(transactionDomain);
@@ -75,14 +89,24 @@ class TransactionTypeControllerTest {
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/transactions-type/save-check")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(transactionDomain)))
-                .andExpect(status().isCreated());
+        assertAll(
+                () -> mockMvc.perform(MockMvcRequestBuilders.post("/transactions-type/save-check")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(transactionDomain))
+                                //.with(csrf())
+                                .with(user("user").roles(BankRole.USER.toString())))
+                        .andExpect(status().isCreated()),
+
+                () -> mockMvc.perform(MockMvcRequestBuilders.post("/transactions-type/save-check")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(transactionDomain)))
+                                //.with(csrf()))
+                        .andExpect(status().isUnauthorized())
+        );
     }
 
     @Test
-    @DisplayName("Should save one transactionDomain in json format using the service or return a bad request")
+    @DisplayName("Should save one transactionDomain in json format using the service or return a bad request if is authorized")
     void saveOnlinePaymentTransaction() throws Exception {
         Mockito.when(transactionTypeService.saveOnlinePaymentTransaction(ArgumentMatchers.any()))
                 .thenReturn(transactionDomain);
@@ -91,14 +115,24 @@ class TransactionTypeControllerTest {
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/transactions-type/save-online-payment")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(transactionDomain)))
-                .andExpect(status().isCreated());
+        assertAll(
+                () -> mockMvc.perform(MockMvcRequestBuilders.post("/transactions-type/save-online-payment")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(transactionDomain))
+                                //.with(csrf())
+                                .with(user("user").roles(BankRole.USER.toString())))
+                        .andExpect(status().isCreated()),
+
+                () -> mockMvc.perform(MockMvcRequestBuilders.post("/transactions-type/save-online-payment")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(transactionDomain)))
+                                //.with(csrf()))
+                        .andExpect(status().isUnauthorized())
+        );
     }
 
     @Test
-    @DisplayName("Should save one transactionDomain in json format using the service or return a bad request")
+    @DisplayName("Should save one transactionDomain in json format using the service or return a bad request if is authorized")
     void saveWireTransferTransaction() throws Exception {
         Mockito.when(transactionTypeService.saveWireTransferTransaction(ArgumentMatchers.any()))
                 .thenReturn(transactionDomain);
@@ -107,9 +141,19 @@ class TransactionTypeControllerTest {
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/transactions-type/save-transfer")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(transactionDomain)))
-                .andExpect(status().isCreated());
+        assertAll(
+                () -> mockMvc.perform(MockMvcRequestBuilders.post("/transactions-type/save-transfer")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(transactionDomain))
+                                //.with(csrf())
+                                .with(user("user").roles(BankRole.USER.toString())))
+                        .andExpect(status().isCreated()),
+
+                () -> mockMvc.perform(MockMvcRequestBuilders.post("/transactions-type/save-transfer")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(transactionDomain)))
+                                //.with(csrf()))
+                        .andExpect(status().isUnauthorized())
+        );
     }
 }

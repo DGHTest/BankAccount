@@ -9,8 +9,6 @@ import java.math.BigDecimal;
 
 @Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class AccountDomain {
 
     private long idAccount;
@@ -20,6 +18,8 @@ public class AccountDomain {
     private String email;
 
     private String password;
+
+    private String matchPassword;
 
     private BigDecimal currentBalance;
 }

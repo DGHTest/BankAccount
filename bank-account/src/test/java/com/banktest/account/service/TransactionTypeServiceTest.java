@@ -46,6 +46,7 @@ class TransactionTypeServiceTest {
                 .accountName("Random345778")
                 .email("user@names.com")
                 .password("1234567")
+                .matchPassword("1234567")
                 .currentBalance(new BigDecimal("20000.00"))
                 .build();
 

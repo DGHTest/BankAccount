@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,22 +18,22 @@ public class TransactionTypeController {
     private TransactionTypeService transactionTypeService;
 
     @PostMapping(value = "/save-deposit", consumes = {"application/json"})
-    public ResponseEntity<TransactionDomain> saveDepositTransaction(TransactionDomain transactionDomain) {
+    public ResponseEntity<TransactionDomain> saveDepositTransaction(@RequestBody TransactionDomain transactionDomain) {
         return new ResponseEntity<>(transactionTypeService.saveDepositTransaction(transactionDomain), HttpStatus.CREATED);
     }
 
     @PostMapping(value = "/save-check", consumes = {"application/json"})
-    public ResponseEntity<TransactionDomain> saveCheckTransaction(TransactionDomain transactionDomain) {
+    public ResponseEntity<TransactionDomain> saveCheckTransaction(@RequestBody TransactionDomain transactionDomain) {
         return new ResponseEntity<>(transactionTypeService.saveCheckTransaction(transactionDomain), HttpStatus.CREATED);
     }
 
     @PostMapping(value = "/save-online-payment", consumes = {"application/json"})
-    public ResponseEntity<TransactionDomain> saveOnlinePaymentTransaction(TransactionDomain transactionDomain) {
+    public ResponseEntity<TransactionDomain> saveOnlinePaymentTransaction(@RequestBody TransactionDomain transactionDomain) {
         return new ResponseEntity<>(transactionTypeService.saveOnlinePaymentTransaction(transactionDomain), HttpStatus.CREATED);
     }
 
     @PostMapping(value = "/save-transfer", consumes = {"application/json"})
-    public ResponseEntity<TransactionDomain> saveWireTransferTransaction(TransactionDomain transactionDomain) {
+    public ResponseEntity<TransactionDomain> saveWireTransferTransaction(@RequestBody TransactionDomain transactionDomain) {
         return new ResponseEntity<>(transactionTypeService.saveWireTransferTransaction(transactionDomain), HttpStatus.CREATED);
     }
 }

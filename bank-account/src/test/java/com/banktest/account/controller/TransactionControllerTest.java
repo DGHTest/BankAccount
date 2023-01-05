@@ -4,6 +4,7 @@ import com.banktest.account.domain.TransactionDomain;
 import com.banktest.account.domain.service.TransactionService;
 import com.banktest.account.web.TransactionController;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import java.util.Optional;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -75,13 +77,16 @@ class TransactionControllerTest {
     }
 
     @Test
+    @DisplayName("Should return one transactionDomain in json format with a specific id using the service or return a not found if is authorized")
     void getTransactionById() {
         Mockito.when(transactionService.getTransactionById(67582l))
                 .thenReturn(Optional.of(transactionDomainList.get(3)));
 
         assertAll(
                 () -> mockMvc.perform(get("/transactions/67582")
-                                .contentType(MediaType.APPLICATION_JSON))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                //.with(csrf())
+                                .with(user("user").roles(BankRole.USER.toString())))
                         .andExpect(status().isOk())
                         .andExpect(jsonPath("$.idTransaction")
                                 .value(transactionDomainList.get(3).getIdTransaction()))
@@ -93,19 +98,29 @@ class TransactionControllerTest {
                                 .value(transactionDomainList.get(3).getTransactionTimestamp().toString())),
 
                 () -> mockMvc.perform(get("/transactions/54")
-                                .contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isNotFound())
+                                .contentType(MediaType.APPLICATION_JSON)
+                                //.with(csrf())
+                                .with(user("user").roles(BankRole.USER.toString())))
+                        .andExpect(status().isNotFound()),
+
+                () -> mockMvc.perform(get("/transactions/54")
+                        .contentType(MediaType.APPLICATION_JSON))
+                        //.with(csrf()))
+                        .andExpect(status().isUnauthorized())
         );
     }
 
     @Test
+    @DisplayName("Should return all transactionDomains in json format with a specific idAccount using the service or return a not found if is authorized")
     void getByIdAccount() {
         Mockito.when(transactionService.getByIdAccount(885748l))
                 .thenReturn(Arrays.asList(transactionDomainList.get(0), transactionDomainList.get(2), transactionDomainList.get(3)));
 
         assertAll(
                 () -> mockMvc.perform(get("/transactions/account/885748")
-                                .contentType(MediaType.APPLICATION_JSON))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                //.with(csrf())
+                                .with(user("user").roles(BankRole.USER.toString())))
                         .andExpect(status().isOk())
                         .andExpect(jsonPath("$.*", hasSize(3)))
                         .andExpect(jsonPath("$[0].idTransaction")
@@ -130,19 +145,29 @@ class TransactionControllerTest {
                                 .value(transactionDomainList.get(3).getTransactionAmount())),
 
                 () -> mockMvc.perform(get("/transactions/account/7348")
-                                .contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isNotFound())
+                                .contentType(MediaType.APPLICATION_JSON)
+                                //.with(csrf())
+                                .with(user("user").roles(BankRole.USER.toString())))
+                        .andExpect(status().isNotFound()),
+
+                () -> mockMvc.perform(get("/transactions/account/885748")
+                        .contentType(MediaType.APPLICATION_JSON))
+                        //.with(csrf()))
+                        .andExpect(status().isUnauthorized())
         );
     }
 
     @Test
+    @DisplayName("Should return all transactionDomains in json format with a specific idAccount and with the timestamp condition using the service or return a not found if is authorized")
     void getByTimeAndIdAccount() {
         Mockito.when(transactionService.getByTimeAndIdAccount(Instant.parse("2021-10-09T20:10:00Z"), 54365l))
                 .thenReturn(Arrays.asList(transactionDomainList.get(1)));
 
         assertAll(
                 () -> mockMvc.perform(get("/transactions/account/54365/time/2021-10-09T20:10:00Z")
-                                .contentType(MediaType.APPLICATION_JSON))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                //.with(csrf())
+                                .with(user("user").roles(BankRole.USER.toString())))
                         .andExpect(status().isOk())
                         .andExpect(jsonPath("$.*", hasSize(1)))
                         .andExpect(jsonPath("$[0].idTransaction")
@@ -155,8 +180,15 @@ class TransactionControllerTest {
                                 .value(transactionDomainList.get(1).getTransactionTimestamp().toString())),
 
                 () -> mockMvc.perform(get("/transactions/account/54365/time/2022-10-09T20:10:00Z")
-                                .contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isNotFound())
+                                .contentType(MediaType.APPLICATION_JSON)
+                                //.with(csrf())
+                                .with(user("user").roles(BankRole.USER.toString())))
+                        .andExpect(status().isNotFound()),
+
+                () -> mockMvc.perform(get("/transactions/account/54365/time/2021-10-09T20:10:00Z")
+                            .contentType(MediaType.APPLICATION_JSON))
+                            //.with(csrf()))
+                        .andExpect(status().isUnauthorized())
         );
     }
 }

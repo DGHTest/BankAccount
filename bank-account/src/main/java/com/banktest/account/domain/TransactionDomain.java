@@ -10,8 +10,6 @@ import java.time.Instant;
 
 @Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class TransactionDomain {
 
     private long idTransaction;

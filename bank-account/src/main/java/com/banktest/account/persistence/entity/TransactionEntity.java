@@ -38,7 +38,8 @@ public class TransactionEntity {
     private TransactionType transactionType;
 
     @Column(name = "transaction_timestamp", nullable = false)
-    private Instant transactionTimestamp;
+    @Builder.Default
+    private Instant transactionTimestamp = Instant.now();
 
     @ManyToOne
     @JoinColumn(name = "id_account", insertable = false, updatable = false)

@@ -1,6 +1,5 @@
 package com.banktest.account.crud;
 
-import com.banktest.account.constants.Role;
 import com.banktest.account.persistence.crud.AccountCrudRepository;
 import com.banktest.account.persistence.entity.AccountEntity;
 import org.junit.jupiter.api.DisplayName;
@@ -39,7 +38,6 @@ class AccountCrudRepositoryTest {
                 () -> assertThat(accountEntity.getEmail()).isEqualTo("random1@names.com"),
                 () -> assertThat(accountEntity.getPassword()).isEqualTo("123456"),
                 () -> assertThat(accountEntity.getCurrentBalance().toString()).isEqualTo("10000.00"),
-                () -> assertThat(accountEntity.getRole()).isEqualTo(Role.USER),
                 () -> assertThat(accountEntity.getEnabled()).isEqualTo(true)
         );
     }
@@ -58,7 +56,6 @@ class AccountCrudRepositoryTest {
                 () -> assertThat(accountEntity.getEmail()).isEqualTo("random3@names.com"),
                 () -> assertThat(accountEntity.getPassword()).isEqualTo("123456"),
                 () -> assertThat(accountEntity.getCurrentBalance().toString()).isEqualTo("4000.00"),
-                () -> assertThat(accountEntity.getRole()).isEqualTo(Role.USER),
                 () -> assertThat(accountEntity.getEnabled()).isEqualTo(true)
         );
     }
@@ -70,8 +67,6 @@ class AccountCrudRepositoryTest {
                 .accountName("Random6")
                 .email("random6@names.com")
                 .password("1234567")
-                .currentBalance(new BigDecimal(1.00))
-                .role(Role.USER)
                 .build();
 
         AccountEntity accountSave = accountCrudRepository.save(accountEntity);
@@ -82,7 +77,6 @@ class AccountCrudRepositoryTest {
                 () -> assertEquals(accountEntity.getEmail(), accountSave.getEmail()),
                 () -> assertEquals(accountEntity.getPassword(), accountSave.getPassword()),
                 () -> assertEquals(accountEntity.getCurrentBalance(), accountSave.getCurrentBalance()),
-                () -> assertEquals(accountEntity.getRole(), accountSave.getRole()),
                 () -> assertThat(accountEntity.getEnabled()).isEqualTo(false)
         );
     }
@@ -93,13 +87,26 @@ class AccountCrudRepositoryTest {
         BigDecimal currentBalance = new BigDecimal("4000.00");
         currentBalance = currentBalance.subtract(new BigDecimal("1000.00"));
 
-        accountCrudRepository.updateBalance(currentBalance, 3);
+        accountCrudRepository.updateBalanceById(currentBalance, 3);
 
         AccountEntity accountEntity = accountCrudRepository.findById(3L).get();
 
         assertAll(
                 () -> assertThat(accountEntity.getIdAccount()).isEqualTo(3),
                 () -> assertThat(accountEntity.getCurrentBalance().toString()).isEqualTo("3000.00")
+        );
+    }
+
+    @Test
+    @DisplayName("Should update the status of a specific account with his id in the database")
+    public void updateStatus() {
+        accountCrudRepository.updateStatusById(5);
+
+        AccountEntity accountEntity = accountCrudRepository.findById(5L).get();
+
+        assertAll(
+                () -> assertThat(accountEntity.getIdAccount()).isEqualTo(5),
+                () -> assertThat(accountEntity.getEnabled()).isEqualTo(true)
         );
     }
 }

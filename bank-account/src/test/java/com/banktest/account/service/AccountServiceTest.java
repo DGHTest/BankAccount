@@ -39,6 +39,7 @@ class AccountServiceTest {
                 .accountName("Random634675")
                 .email("random@names.com")
                 .password("1234567")
+                .matchPassword("1234567")
                 .currentBalance(new BigDecimal(654316.76))
                 .build();
 
@@ -47,6 +48,7 @@ class AccountServiceTest {
                 .accountName("Random345778")
                 .email("user@names.com")
                 .password("1234567")
+                .matchPassword("1234567")
                 .currentBalance(new BigDecimal(543256.00))
                 .build();
 
@@ -77,12 +79,13 @@ class AccountServiceTest {
 
     @Test
     @DisplayName("Should pass one accountDomain to repository and return it")
-    void saveAccount() {
+    void saveAccount() throws Exception {
         AccountDomain accountDomain = AccountDomain.builder()
                 .idAccount(435456l)
                 .accountName("RandomSave")
                 .email("saveaccount@names.com")
                 .password("452353425")
+                .matchPassword("452353425")
                 .currentBalance(new BigDecimal(4376.65))
                 .build();
 
